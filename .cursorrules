@@ -11,61 +11,6 @@
 - 依賴查詢：透過官方文件 URL 搜尋套件相依性資訊 
  
 --- 
- 
-## Windows CMD 操作指引
-
-* **啟動命令提示字元**：按下 `Win` + `R`，輸入 `cmd`，然後按 `Enter`。
-* **切換目錄**：使用 `cd`，例如 `cd C:\path\to\project`。
-* **列出檔案與資料夾**：使用 `dir`。
-* **建立資料夾**：使用 `mkdir 資料夾名稱`。
-* **刪除檔案**：使用 `del 檔案名稱`。
-* **刪除資料夾**：使用 `rmdir /S /Q 資料夾名稱`（包含子目錄且不提示）。
-* **複製檔案**：使用 `copy 來源 目的地`。
-* **移動檔案／資料夾**：使用 `move 來源 目的地`。
-* **執行 Python 腳本**：使用 `python script.py` 或 `py script.py`。
-* **串接多重指令**：
-
-  * 使用 `&&` 僅當前一指令成功時才執行下一指令，例如：
-
-    ```bat
-    mkdir test && cd test
-    ```
-  * 使用 `||` 僅當前一指令失敗時執行下一指令，例如：
-
-    ```bat
-    type missing.txt || echo File not found
-    ```
-  * 使用 `&` 不論前一指令成功或失敗都執行下一指令，例如：
-
-    ```bat
-    echo step1 & echo step2
-    ```
-
----
-
-## Windows PowerShell 操作指引
-
-PowerShell 為 Windows 上進階的殼層（shell）與指令腳本環境，與 Linux shell（bash/zsh）在語法與物件模型上有以下主要差異：
-
-* **物件導向管線**：PowerShell 的管線傳遞物件，而非純文字。例如：
-
-  ```powershell
-  Get-Process | Where-Object { $_.CPU -gt 100 }
-  ```
-* **指令（cmdlet）命名慣例**：多為 `動詞-名詞` 格式，如 `Get-ChildItem`、`Set-Location`，對應 Linux 的 `ls`、`cd`。
-* **變數宣告**：變數前需加 `$`，且不需顯式宣告類型，例如：
-
-  ```powershell
-  $files = Get-ChildItem -Path . -Filter *.txt
-  ```
-* **切換目錄**：使用 `Set-Location`（別名 `cd`）、`Push-Location` / `Pop-Location` 管理位置堆疊。
-* **列出檔案**：使用 `Get-ChildItem`（別名 `ls`, `dir`）、可搭配 `-Recurse` 深度搜尋。
-* **建立資料夾**：使用 `New-Item -ItemType Directory -Name 資料夾名稱`。
-* **刪除檔案／資料夾**：使用 `Remove-Item 路徑`；加 `-Recurse` 刪除子目錄，加 `-Force` 忽略提示。
-* **複製檔案**：使用 `Copy-Item來源 -Destination 目的地`。
-* **移動檔案／資料夾**：使用 `Move-Item 來源 -Destination 目的地`。
-* **執行 Python 腳本**：與 CMD 相同，使用 `python script.py`，但可在同一行中搭配 PowerShell 參數。
-* **執行腳本設定**：預設禁止執行腳本，可透過 `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser` 設定執行策略。
 
 ## 一、基本指示 (Instructions) 
  
@@ -96,147 +41,202 @@ PowerShell 為 Windows 上進階的殼層（shell）與指令腳本環境，與 
  
 > 資料夾樹狀結構
 
-```
-crewai_from_0_to_1/
-├── 01_Framework基礎/
-│   └── Week_01-02_Reflection_Pattern/
-│       ├── README.md
-│       ├── lecture_notes.md
-│       ├── examples/
-│       │   └── self_critique_loop/
-│       │       ├── README.md
-│       │       └── main.py
-│       └── lab/
-│           ├── README.md
-│           └── lab_1.md
-├── 02_Processes_Crews/
-│   └── Week_03-04_Planning_Pattern/
-│       ├── README.md
-│       ├── lecture_notes.md
-│       ├── examples/
-│       │   └── manager_agent_planning/
-│       │       ├── README.md
-│       │       └── main.py
-│       └── lab/
-│           ├── README.md
-│           └── lab_2.md
-├── 03_Flows/
-│   └── Week_05-06_Dynamic_Planning/
-│       ├── README.md
-│       ├── lecture_notes.md
-│       ├── examples/
-│       │   └── aqi_alert_flow/
-│       │       ├── README.md
-│       │       └── main.py
-│       └── lab/
-│           ├── README.md
-│           └── lab_3.md
-├── 04_Tools_Memory/
-│   └── Week_07-08_Tool_Use_Pattern/
-│       ├── README.md
-│       ├── lecture_notes.md
-│       ├── examples/
-│       │   ├── custom_tool_exchange_rate/
-│       │   │   ├── README.md
-│       │   │   └── main.py
-│       │   └── async_tool_example/
-│       │       ├── README.md
-│       │       └── main.py
-│       └── lab/
-│           ├── README.md
-│           └── lab_4.md
-├── 05_Knowledge_RAG/
-│   └── Week_09-10_RAG_and_Reflection/
-│       ├── README.md
-│       ├── lecture_notes.md
-│       ├── examples/
-│       │   └── rag_self_correction/
-│       │       ├── README.md
-│       │       └── main.py
-│       └── lab/
-│           ├── README.md
-│           └── lab_5.md
-├── 06_Training_Testing/
-│   └── Week_11-12_Self_Training_Pipeline/
-│       ├── README.md
-│       ├── lecture_notes.md
-│       ├── examples/
-│       │   └── crew_training_pipeline/
-│       │       ├── README.md
-│       │       └── main.py
-│       └── lab/
-│           ├── README.md
-│           └── lab_6.md
-├── 07_Observability_Ops/
-│   └── Week_13_Observability/
-│       ├── README.md
-│       ├── lecture_notes.md
-│       ├── examples/
-│       │   └── agentops_integration/
-│       │       ├── README.md
-│       │       └── main.py
-│       └── lab/
-│           ├── README.md
-│           └── lab_7.md
-├── 08_Deployment/
-│   └── Week_14_Deployment_Strategy/
-│       ├── README.md
-│       ├── lecture_notes.md
-│       ├── examples/
-│       │   └── github_actions_deployment/
-│       │       ├── README.md
-│       │       └── main.py
-│       └── lab/
-│           ├── README.md
-│           └── lab_8.md
-├── 09_Capstone/
-│   └── Week_15-16_Multi_Agent_Capstone/
-│       ├── README.md
-│       ├── project_brief.md
-│       ├── team_A/
-│       │   ├── main.py
-│       │   └── README.md
-│       └── team_B/
-│           ├── main.py
-│           └── README.md
-├── templates/
-│   ├── lecture_template.md
-│   └── lab_template.md
-├── resources/
-│   ├── papers/
-│   └── images/
-├── env/
-│   └── requirements.txt
-└── README.md
+```text
+crewai-agentic-course/               ← Git 倉庫根
+│
+├─ README.md                         ← 一頁式快速啟動
+├─ requirements.txt                  ← Python 依賴
+├─ pyproject.toml                    ← Poetry (可選)
+├─ .env.example                      ← API 金鑰範例
+├─ .gitignore
+│
+├─ docs/                             ← 教材／說明文件 (Why‧What)
+│  ├─ syllabus.md
+│  ├─ patterns/
+│  │   ├─ reflection.md
+│  │   ├─ planning.md
+│  │   ├─ tool_use.md
+│  │   └─ multi_agent.md
+│  ├─ guides/
+│  │   ├─ setup_guide.md
+│  │   ├─ faq.md
+│  │   └─ style_guide.md
+│  ├─ rubrics.md                     ← 評量指標 (5★/3★/1★)
+│  └─ refs.bib                       ← BibTeX 資料庫
+│
+├─ src/                              ← 核心程式碼 (How)
+│  ├─ __init__.py
+│  │
+│  ├─ core/                          ← CrewAI 基礎薄封裝
+│  │   ├─ agents/
+│  │   │   ├─ __init__.py
+│  │   │   ├─ agent_base.py
+│  │   │   ├─ researcher.py
+│  │   │   ├─ writer.py
+│  │   │   └─ planner.py
+│  │   ├─ tasks/
+│  │   │   ├─ __init__.py
+│  │   │   ├─ task_base.py
+│  │   │   └─ evaluation_task.py
+│  │   ├─ tools/
+│  │   │   ├─ __init__.py
+│  │   │   ├─ code_interpreter_tool.py
+│  │   │   ├─ forex_api_tool.py
+│  │   │   └─ website_search_tool.py
+│  │   ├─ flows/
+│  │   │   ├─ __init__.py
+│  │   │   └─ flow_base.py
+│  │   ├─ crews/
+│  │   │   ├─ __init__.py
+│  │   │   └─ crew_factory.py
+│  │   ├─ memory/
+│  │   │   ├─ __init__.py
+│  │   │   ├─ memory_manager.py
+│  │   │   ├─ chromadb_client.py
+│  │   │   ├─ sqlite_client.py
+│  │   │   └─ entity_memory.py
+│  │   └─ knowledge/
+│  │       ├─ __init__.py
+│  │       ├─ base_source.py
+│  │       ├─ pdf_source.py
+│  │       ├─ csv_source.py
+│  │       └─ web_source.py
+│  │
+│  ├─ patterns/                      ← 可插拔四大 Agentic 模式
+│  │   ├─ reflection/
+│  │   │   ├─ __init__.py
+│  │   │   ├─ self_critique.py
+│  │   │   └─ templates/
+│  │   │       └─ critique_prompt.txt
+│  │   ├─ planning/
+│  │   │   ├─ __init__.py
+│  │   │   └─ wbs_planner.py
+│  │   ├─ tool_use/
+│  │   │   ├─ __init__.py
+│  │   │   └─ robust_tool_wrapper.py
+│  │   └─ multi_agent/
+│  │       ├─ __init__.py
+│  │       └─ delegation_manager.py
+│  │
+│  ├─ pipelines/                     ← 高階工作流範例
+│  │   ├─ __init__.py
+│  │   ├─ self_refine/
+│  │   │   ├─ __init__.py
+│  │   │   ├─ self_refine_pipeline.py
+│  │   │   └─ README.md
+│  │   ├─ rag_reflect/
+│  │   │   ├─ __init__.py
+│  │   │   ├─ rag_loop.py
+│  │   │   └─ README.md
+│  │   └─ aqi_alert_flow/
+│  │       ├─ __init__.py
+│  │       ├─ aqi_flow.py
+│  │       └─ README.md
+│  │
+│  ├─ data/                          ← 內建示範資料集
+│  │   ├─ forex_sample.csv
+│  │   └─ aqi_sample.json
+│  │
+│  └─ templates/                     ← 程式／報告範本
+│      ├─ agent_template.py
+│      ├─ task_template.py
+│      ├─ flow_template.py
+│      ├─ dockerfile_template      (Dockerfile 範本)
+│      └─ lab_report_template.md
+│
+├─ work/                             ← 學生實作 (Do)
+│  ├─ labs/
+│  │   ├─ week01_reflection/
+│  │   │   ├─ README.md
+│  │   │   ├─ solution.py
+│  │   │   └─ sample_output.json
+│  │   ├─ week02_reflection/
+│  │   ├─ week03_planning/
+│  │   ├─ …                         （week04~12 依序）
+│  │   └─ week12_training/
+│  │
+│  └─ projects/
+│      └─ capstone_teamX/
+│          ├─ docs/
+│          │   ├─ design_doc.md
+│          │   └─ TODO_future_work.md
+│          ├─ src/
+│          │   ├─ app.py
+│          │   └─ requirements.txt
+│          └─ evaluation/
+│              ├─ rubric.xlsx
+│              └─ demo_video.mp4
+│
+├─ infra/                            ← 執行／部署 (Run)
+│  ├─ docker-compose.yml
+│  ├─ Dockerfile
+│  ├─ k8s/
+│  │   ├─ crewai-deployment.yaml
+│  │   ├─ chroma-deployment.yaml
+│  │   └─ grafana-deployment.yaml
+│  ├─ ci/
+│  │   └─ github-actions.yml
+│  └─ observability/
+│      ├─ grafana/
+│      │   └─ crewai_dashboard.json
+│      └─ prometheus/
+│          └─ prometheus.yml
+│
+├─ tests/                            ← pytest 單元／整合測試
+│  ├─ conftest.py
+│  ├─ test_agents.py
+│  ├─ test_tools.py
+│  ├─ test_memory.py
+│  └─ test_pipelines.py
+│
+└─ notebooks/                        ← 可選：教學 Jupyter
+    ├─ 01_reflection_demo.ipynb
+    └─ 07_tool_use_async.ipynb
+
 ```
 
 ### 資料夾規劃說明
 
-> 專為《CrewAI × Agentic Design Patterns》課程設計的優化資料夾結構。
-> **核心理念**：將每個教學範例視為一個獨立的子專案，並在各層級提供 `README.md` 開發說明書，以確保課程內容的模組化、可讀性與易用性。
+### 補充說明
+以下提供 **「CrewAI × Agentic Design Patterns 教案」** 的 **最終完整資料夾樹**（含所有建議檔案），做為「一鍵複製 / 教材發佈」用的 **Gold Master** 版本。
 
-- **`01_Framework基礎/`**: 涵蓋第一、二週課程，聚焦 Agent/Task 與 Reflection 模式。
-  - `Week_01-02_Reflection_Pattern/`: 該週主題資料夾。
-    - `lecture_notes.md`: 該週課程講義。
-    - `examples/`: 程式碼範例，如 `self_critique_loop.py`。
-    - `lab/`: 實驗指南與學員作業區，如 `lab_1.md`。
-- **`02_Processes_Crews/`**: 第三、四周，關於 Crew 流程與 Planning 模式。
-- **`03_Flows/`**: 第五、六週，事件驅動的 Flow 與動態規劃。
-- **`04_Tools_Memory/`**: 第七、八週，工具使用與記憶系統。
-- **`05_Knowledge_RAG/`**: 第九、十週，知識庫整合與 RAG。
-- **`06_Training_Testing/`**: 第十一、十二週，模型訓練與測試。
-- **`07_Observability_Ops/`**: 第十三週，系統監控與維運。
-- **`08_Deployment/`**: 第十四週，部署策略。
-- **`09_Capstone/`**: 第十五、十六週，整合性的 Capstone 專案。
-- **`templates/`**: 存放共用範本。
-- **`resources/`**: 存放額外資源。
-- **`env/`**: 存放環境設定檔案。
-- **`README.md`**: 專案總覽與說明。
-- **`README.md` 層級**：
-  - **根目錄 `README.md`**：提供整個課程專案的總覽。
-  - **週次目錄 `README.md`** (e.g., `Week_01-02_Reflection_Pattern/README.md`)：說明該週的學習目標、核心概念與活動安排。
-  - **範例目錄 `README.md`** (e.g., `examples/self_critique_loop/README.md`)：詳細解釋該範例的目的、使用方法、程式碼邏輯與預期輸出。
-  - **實驗目錄 `README.md`** (e.g., `lab/README.md`)：提供該週所有實驗的總體指引。
+1. **`src/core/*` = 基礎抽象層**
+
+   * 可獨立於任何 Pattern & Pipeline 重複使用。
+   * `memory/`、`knowledge/` 由此統一管理，避免散落。
+
+2. **`src/patterns/*` = 四大 Agentic 模式元件**
+
+   * 彼此解耦，可於 Pipeline 或 Lab 中自由組裝。
+   * 範例：`SelfCritiqueTool` 供 Reflection、`wbs_planner.py` 供 Planning。
+
+3. **`src/pipelines/*` = 整合範例**
+
+   * **Self-Refine**：LLM→Critique→Retrain。
+   * **RAG-Reflect**：檢索→生成→反思再檢索。
+   * **AQI Alert Flow**：事件驅動 + 動態排程。
+
+4. **`work/` = 實作區**
+
+   * **Labs**：每週一資料夾，教師出題 → 學生解。
+   * **Projects**：Capstone 分組；留 `docs/` `src/` `evaluation/` 三夾方便 CI 檢測。
+
+5. **`infra/` = 運維腳手架**
+
+   * 提供 *Local*（Docker Compose）、*Prod*（K8s）、*CI/CD*（GitHub Actions）與 *Observability*（Grafana+Prometheus）。
+
+6. **多媒體／Notebook**
+
+   * 若課程需要互動示範，可將 `.ipynb` 放入 `notebooks/`，不干擾核心程式碼。
+
+> **使用建議**
+>
+> 1. **Clone → `make init`**：一次安裝依賴與 pre-commit。
+> 2. **`docker compose up -d`**：本地跑 Chroma + CrewAI Dev Server。
+> 3. **`pytest -q`**：確認核心模組通過測試。
+> 4. **逐週切換分支**：`git checkout week03_start`；保持教學節奏。
+
+此結構已完整覆蓋 **Tools、Memory、Knowledge、RAG、四大 Pattern、CI/CD、Observability** 等所有教學需求，並保持 **MECE 與金字塔層次**；後續增刪模組，只需在對應資料夾新增或修改檔案即可。祝教學／開發順利!
  
 ## 四、Scratchpad 
  
