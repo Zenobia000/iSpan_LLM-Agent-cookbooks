@@ -8,7 +8,15 @@ CrewAI 核心 Agent 基礎類別
 
 參考文檔: docs/core/agents_fundamentals.md
 """
-
+# 修復 SQLite 版本兼容性 - 必須在導入 CrewAI 之前執行
+import sys
+try:
+    import pysqlite3.dbapi2 as sqlite3
+    sys.modules['sqlite3'] = sqlite3
+    sys.modules['sqlite3.dbapi2'] = sqlite3
+except ImportError:
+    import sqlite3
+    
 from typing import List, Dict, Optional, Any, Union, Type
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
@@ -20,7 +28,7 @@ from datetime import datetime
 
 from crewai import Agent
 from crewai.tools import BaseTool
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 from ..memory.memory_manager import MemoryManager
 from ..tools.tool_registry import ToolRegistry
@@ -88,13 +96,15 @@ class AgentConfig(BaseModel):
     llm_config: Optional[Dict[str, Any]] = Field(default=None, description="LLM 配置")
     system_message: Optional[str] = Field(default=None, description="系統訊息")
     
-    @validator('role')
+    @field_validator('role')
+    @classmethod
     def validate_role(cls, v):
         if not v or len(v.strip()) < 3:
             raise ValueError("角色定義至少需要3個字符")
         return v.strip()
     
-    @validator('goal')
+    @field_validator('goal')
+    @classmethod
     def validate_goal(cls, v):
         if not v or len(v.strip()) < 10:
             raise ValueError("目標描述至少需要10個字符")
@@ -121,6 +131,9 @@ class BaseAgent(Agent):
     - 實作 Agent Communication Language (ACL) 概念
     - 整合 Cognitive Architecture 模式
     """
+    
+    # 允許額外字段的配置
+    model_config = {"extra": "allow"}
     
     def __init__(self, config: AgentConfig, tools: Optional[List[BaseTool]] = None):
         """
@@ -391,6 +404,9 @@ class SpecializedAgent(BaseAgent):
     
     為特定領域或功能提供專業化能力
     """
+    
+    # 繼承父類的配置
+    model_config = {"extra": "allow"}
     
     def __init__(self, config: AgentConfig, specialization: str, tools: Optional[List[BaseTool]] = None):
         super().__init__(config, tools)

@@ -29,7 +29,7 @@ from abc import ABC, abstractmethod
 
 from crewai import Task, Agent
 from crewai.tools import BaseTool
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 # 任務狀態
 class TaskStatus(Enum):
@@ -105,13 +105,15 @@ class TaskConfig(BaseModel):
     tags: List[str] = Field(default_factory=list, description="標籤")
     metadata: Dict[str, Any] = Field(default_factory=dict, description="元數據")
     
-    @validator('description')
+    @field_validator('description')
+    @classmethod
     def validate_description(cls, v):
         if not v or len(v.strip()) < 10:
             raise ValueError("任務描述至少需要10個字符")
         return v.strip()
     
-    @validator('expected_output')
+    @field_validator('expected_output')
+    @classmethod
     def validate_expected_output(cls, v):
         if not v or len(v.strip()) < 5:
             raise ValueError("期望輸出至少需要5個字符")
