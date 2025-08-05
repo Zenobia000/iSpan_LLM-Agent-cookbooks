@@ -1,0 +1,406 @@
+
+================================================================================
+CrewAI Hierarchical Planning Execution Log
+================================================================================
+執行時間: 2025-08-05 15:57:50
+Python 版本: 3.10.17 (main, Apr  9 2025, 08:54:15) [GCC 9.4.0]
+SQLite 版本: 3.46.1
+工作目錄: /home/os-sunnie.gd.weng/python_workstation/side_project/crewai_system/work/labs/week03_planning
+日誌文件: crewai_execution_20250805_155750.txt
+================================================================================
+
+
+============================================================
+執行配置
+============================================================
+
+執行配置:
+- 高階目標: Write a comprehensive technical blog post about the difference between AI LLM VLM multimodel and single model.
+- 流程模式: Hierarchical (使用 manager_llm)
+- Manager: GPT-4 (manager_llm)
+  - 類型: LLM Manager (非自定義 Agent)
+  - 委派能力: ✅ 內建支援
+- Worker Agents: 3 個
+  - Tech Research Analyst (工具: 1)
+  - Technical Content Writer (工具: 0)
+  - Senior Tech Editor (工具: 0)
+- Crew 配置:
+  - Process: hierarchical
+  - Max RPM: 10
+  - Memory: True
+  - Share Crew: True
+
+委派功能診斷:
+- Manager 類型: ✅ manager_llm (應該能看到所有 Worker Agents)
+- Worker Agents 數量: 3
+- 預期委派流程: GPT-4 Manager → Tech Research Analyst → Technical Content Writer → Senior Tech Editor → Final Result
+
+修復說明:
+- 改用 manager_llm 而非 manager_agent 來避免委派工具看不到 Worker Agents 的問題
+- manager_llm 會自動獲得正確的委派工具配置
+
+
+============================================================
+CrewAI 啟動
+============================================================
+開始執行 hierarchical planning 流程...
+
+============================================================
+開始 CrewAI 執行
+============================================================
+正在啟動 hierarchical planning 流程...
+[36m╭─[0m[36m──────────────────────────────────────────[0m[36m Crew Execution Started [0m[36m───────────────────────────────────────────[0m[36m─╮[0m
+[36m│[0m                                                                                                               [36m│[0m
+[36m│[0m  [1;36mCrew Execution Started[0m                                                                                       [36m│[0m
+[36m│[0m  [37mName: [0m[36mcrew[0m                                                                                                   [36m│[0m
+[36m│[0m  [37mID: [0m[36md8657168-2a56-4f98-864f-6076497d2d81[0m                                                                     [36m│[0m
+[36m│[0m  [37mTool Args: [0m                                                                                                  [36m│[0m
+[36m│[0m                                                                                                               [36m│[0m
+[36m│[0m                                                                                                               [36m│[0m
+[36m╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+🖇 AgentOps: [34mSession Replay for default trace: https://app.agentops.ai/sessions?trace_id=3c19edf22a2ba18de76c2b003e544f15[0m
+[1;36m🚀 Crew: [0m[1;36mcrew[0m
+├── [1;33m📋 Task: 495b773a-eaa0-4ece-a820-f3891e7fd579[0m
+│   [37mStatus: [0m[2;33mExecuting Task...[0m
+└── [1;32m✅ [0m[32mMemory Retrieval Completed[0m
+    └── Sources Used
+        ├── ✅ Long Term Memory (0.18ms)
+        ├── ✅ Short Term Memory (630.68ms)
+        └── ✅ Entity Memory (984.92ms)[35m╭─[0m[35m─────────────────────────────────────────────[0m[35m 🤖 Agent Started [0m[35m──────────────────────────────────────────────[0m[35m─╮[0m
+[35m│[0m                                                                                                               [35m│[0m
+[35m│[0m  [37mAgent: [0m[1;92mCrew Manager[0m                                                                                          [35m│[0m
+[35m│[0m                                                                                                               [35m│[0m
+[35m│[0m  [37mTask: [0m                                                                                                       [35m│[0m
+[35m│[0m  [92m    Create a comprehensive technical blog post by coordinating a team of specialists.[0m                        [35m│[0m
+[35m│[0m  [92m    [0m                                                                                                         [35m│[0m
+[35m│[0m  [92m    **Available Team Members:**[0m                                                                              [35m│[0m
+[35m│[0m  [92m    - Tech Research Analyst: Expert at gathering and analyzing technical information using search tools[0m      [35m│[0m
+[35m│[0m  [92m    - Technical Content Writer: Skilled at writing clear, engaging technical content  [0m                       [35m│[0m
+[35m│[0m  [92m    - Senior Tech Editor: Expert at reviewing and improving content quality[0m                                  [35m│[0m
+[35m│[0m  [92m    [0m                                                                                                         [35m│[0m
+[35m│[0m  [92m    **High-Level Goal:** Write a comprehensive technical blog post about the difference between AI LLM VLM [0m  [35m│[0m
+[35m│[0m  [92mmultimodel and single model.[0m                                                                                 [35m│[0m
+[35m│[0m  [92m    [0m                                                                                                         [35m│[0m
+[35m│[0m  [92m    **Process:**[0m                                                                                             [35m│[0m
+[35m│[0m  [92m    1. First, delegate research tasks to Tech Research Analyst to gather comprehensive information[0m           [35m│[0m
+[35m│[0m  [92m    2. Then, delegate writing tasks to Technical Content Writer using the research findings[0m                  [35m│[0m
+[35m│[0m  [92m    3. Finally, delegate review tasks to Senior Tech Editor to ensure quality[0m                                [35m│[0m
+[35m│[0m  [92m    4. Coordinate and integrate all outputs into a final blog post[0m                                           [35m│[0m
+[35m│[0m  [92m    [0m                                                                                                         [35m│[0m
+[35m│[0m  [92m    **Delegation Instructions:**[0m                                                                             [35m│[0m
+[35m│[0m  [92m    - Use exact role names when delegating: "Tech Research Analyst", "Technical Content Writer", "Senior [0m    [35m│[0m
+[35m│[0m  [92mTech Editor"[0m                                                                                                 [35m│[0m
+[35m│[0m  [92m    - Provide clear, specific task descriptions[0m                                                              [35m│[0m
+[35m│[0m  [92m    - Include all necessary context for each task[0m                                                            [35m│[0m
+[35m│[0m  [92m    - Ensure proper sequencing of tasks[0m                                                                      [35m│[0m
+[35m│[0m  [92m    [0m                                                                                                         [35m│[0m
+[35m│[0m                                                                                                               [35m│[0m
+[35m╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+🖇 AgentOps: ToolEvent() is deprecated and will be removed in v4 in the future. Automatically tracked in v4.
+[1;33m📋 Task: 495b773a-eaa0-4ece-a820-f3891e7fd579[0m
+[37mStatus: [0m[2;33mExecuting Task...[0m
+├── [1;33m🔧 [0m[33mUsing Delegate work to coworker (1)[0m
+└── [1;32m✅ [0m[32mMemory Retrieval Completed[0m
+    └── Sources Used
+        ├── ✅ Long Term Memory (0.20ms)
+        ├── ✅ Short Term Memory (889.85ms)
+        └── ✅ Entity Memory (593.46ms)[35m╭─[0m[35m─────────────────────────────────────────────[0m[35m 🤖 Agent Started [0m[35m──────────────────────────────────────────────[0m[35m─╮[0m
+[35m│[0m                                                                                                               [35m│[0m
+[35m│[0m  [37mAgent: [0m[1;92mTech Research Analyst[0m                                                                                 [35m│[0m
+[35m│[0m                                                                                                               [35m│[0m
+[35m│[0m  [37mTask: [0m[92mConduct comprehensive research on the topic of AI large language models (LLM), vision-language models[0m  [35m│[0m
+[35m│[0m  [92m(VLM), multimodal models, and single models. Collect detailed information on definitions, technical [0m         [35m│[0m
+[35m│[0m  [92mdifferences, use cases, advantages, limitations, and recent advancements.[0m                                    [35m│[0m
+[35m│[0m                                                                                                               [35m│[0m
+[35m╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+🔍 開始搜尋: AI large language models LLM, vision-language models VLM, multimodal models, single models definitions, technical differences, use cases, advantages, limitations, recent advancements
+[1;36m🚀 Crew: [0m[1;36mcrew[0m
+├── [1;33m📋 Task: 495b773a-eaa0-4ece-a820-f3891e7fd579[0m
+│   [37mStatus: [0m[2;33mExecuting Task...[0m
+│   ├── [1;33m🔧 [0m[33mUsing Delegate work to coworker (1)[0m
+│   ├── [1;32m✅ [0m[32mMemory Retrieval Completed[0m
+│   │   └── Sources Used
+│   │       ├── ✅ Long Term Memory (0.20ms)
+│   │       ├── ✅ Short Term Memory (889.85ms)
+│   │       └── ✅ Entity Memory (593.46ms)
+│   └── [1;32m🔧 [0m[32mUsed TavilySearchTool (1)[0m
+└── [1;32m✅ [0m[32mMemory Retrieval Completed[0m
+    └── Sources Used
+        ├── ✅ Long Term Memory (0.18ms)
+        ├── ✅ Short Term Memory (630.68ms)
+        └── ✅ Entity Memory (984.92ms)[35m╭─[0m[35m──────────────────────────────────────────[0m[35m 🔧 Agent Tool Execution [0m[35m──────────────────────────────────────────[0m[35m─╮[0m
+[35m│[0m                                                                                                               [35m│[0m
+[35m│[0m  [37mAgent: [0m[1;92mTech Research Analyst[0m                                                                                 [35m│[0m
+[35m│[0m                                                                                                               [35m│[0m
+[35m│[0m  [37mThought: [0m[92mAction: TavilySearchTool[0m                                                                            [35m│[0m
+[35m│[0m                                                                                                               [35m│[0m
+[35m│[0m  [37mUsing Tool: [0m[1;92mTavilySearchTool[0m                                                                                 [35m│[0m
+[35m│[0m                                                                                                               [35m│[0m
+[35m╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+[34m╭─[0m[34m────────────────────────────────────────────────[0m[34m Tool Input [0m[34m─────────────────────────────────────────────────[0m[34m─╮[0m
+[34m│[0m                                                                                                               [34m│[0m
+[34m│[0m  [38;2;230;219;116;49m"{\"query\": \"AI large language models LLM, vision-language models VLM, multimodal models, single models d[0m  [34m│[0m
+[34m│[0m                                                                                                               [34m│[0m
+[34m╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+[32m╭─[0m[32m────────────────────────────────────────────────[0m[32m Tool Output [0m[32m────────────────────────────────────────────────[0m[32m─╮[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92mAn error occurred during search: ('Connection broken: IncompleteRead(244381 bytes read, 358141 more [0m         [32m│[0m
+[32m│[0m  [92mexpected)', IncompleteRead(244381 bytes read, 358141 more expected))[0m                                         [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+🔍 開始搜尋: AI large language models LLM, vision-language models VLM, multimodal models, single models definitions, technical differences, use cases, advantages, limitations, recent advancements
+📄 搜尋結果類型: <class 'dict'>
+✅ 結果格式正確，開始格式化...
+[1;36m🚀 Crew: [0m[1;36mcrew[0m
+├── [1;33m📋 Task: 495b773a-eaa0-4ece-a820-f3891e7fd579[0m
+│   [37mStatus: [0m[2;33mExecuting Task...[0m
+│   ├── [1;33m🔧 [0m[33mUsing Delegate work to coworker (1)[0m
+│   ├── [1;32m✅ [0m[32mMemory Retrieval Completed[0m
+│   │   └── Sources Used
+│   │       ├── ✅ Long Term Memory (0.20ms)
+│   │       ├── ✅ Short Term Memory (889.85ms)
+│   │       └── ✅ Entity Memory (593.46ms)
+│   ├── [1;32m🔧 [0m[32mUsed TavilySearchTool (1)[0m
+│   └── [1;32m🔧 [0m[32mUsed TavilySearchTool (2)[0m
+└── [1;32m✅ [0m[32mMemory Retrieval Completed[0m
+    └── Sources Used
+        ├── ✅ Long Term Memory (0.18ms)
+        ├── ✅ Short Term Memory (630.68ms)
+        └── ✅ Entity Memory (984.92ms)[35m╭─[0m[35m──────────────────────────────────────────[0m[35m 🔧 Agent Tool Execution [0m[35m──────────────────────────────────────────[0m[35m─╮[0m
+[35m│[0m                                                                                                               [35m│[0m
+[35m│[0m  [37mAgent: [0m[1;92mTech Research Analyst[0m                                                                                 [35m│[0m
+[35m│[0m                                                                                                               [35m│[0m
+[35m│[0m  [37mThought: [0m[92mThought: The search failed, so I will attempt to gather information with a different approach [0m      [35m│[0m
+[35m│[0m  [92mwhile keeping the same criteria in mind.[0m                                                                     [35m│[0m
+[35m│[0m                                                                                                               [35m│[0m
+[35m│[0m  [37mUsing Tool: [0m[1;92mTavilySearchTool[0m                                                                                 [35m│[0m
+[35m│[0m                                                                                                               [35m│[0m
+[35m╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+[34m╭─[0m[34m────────────────────────────────────────────────[0m[34m Tool Input [0m[34m─────────────────────────────────────────────────[0m[34m─╮[0m
+[34m│[0m                                                                                                               [34m│[0m
+[34m│[0m  [38;2;230;219;116;49m"{\"query\": \"AI large language models LLM, vision-language models VLM, multimodal models, single models d[0m  [34m│[0m
+[34m│[0m                                                                                                               [34m│[0m
+[34m╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+[32m╭─[0m[32m────────────────────────────────────────────────[0m[32m Tool Output [0m[32m────────────────────────────────────────────────[0m[32m─╮[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m=== 搜尋結果 ===[0m                                                                                             [32m│[0m
+[32m│[0m  [92m-- 來源 1 --[0m                                                                                                 [32m│[0m
+[32m│[0m  [92m標題：自然语言处理2025_8_4[0m                                                                                   [32m│[0m
+[32m│[0m  [92m網址：http://www.arxivdaily.com/thread/70141[0m                                                                 [32m│[0m
+[32m│[0m  [92m內容摘要：[0m                                                                                                   [32m│[0m
+[32m│[0m  [92mWe show the efficacy of the proposed paradigm using different embedding models, including large language [0m    [32m│[0m
+[32m│[0m  [92mmodels, on downstream tasks. Our results show that[0m                                                           [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m-- 來源 2 --[0m                                                                                                 [32m│[0m
+[32m│[0m  [92m標題：Seminar | Deep Learning JP[0m                                                                             [32m│[0m
+[32m│[0m  [92m網址：https://deeplearning.jp/seminar-2/[0m                                                                     [32m│[0m
+[32m│[0m  [92m內容摘要：[0m                                                                                                   [32m│[0m
+[32m│[0m  [92mDeep Learning技術は、他の分野では例を見ないスピードで世界的に研究が進められています。 [0m                       [32m│[0m
+[32m│[0m  [92mこのような状況の下、DL Seminarsは、最先端の研究動向の調査を目的とし、[0m                                        [32m│[0m
+[32m│[0m  [92m詳細全文：[0m                                                                                                   [32m│[0m
+[32m│[0m  [92m![日本語](https://deeplearning.jp/wp-content/plugins/qtranslate-x/flags/jp.png)[0m                              [32m│[0m
+[32m│[0m  [92m![日本語](https://deeplearning.jp/wp-content/plugins/qtranslate-x/flags/jp.png)[0m                              [32m│[0m
+[32m│[0m  [92m![English](https://deeplearning.jp/wp-content/plugins/qtranslate-x/flags/gb.png)[0m                             [32m│[0m
+[32m│[0m  [92m![Logo](https://deeplearning.jp/wp-content/themes/academia/dist/images/logo/logo-blue.png)[0m                   [32m│[0m
+[32m│[0m  [92m![日本語](https://deeplearning.jp/wp-content/plugins/qtranslate-x/flags/jp.png) [0m                             [32m│[0m
+[32m│[0m  [92m![日本語](https://deeplearning.jp/wp-content/plugins/qtranslate-x/flags/jp.png)[0m                              [32m│[0m
+[32m│[0m  [92m![English](https://deeplearning.jp/wp-content/plugins/qtranslate-x/flags/gb.png)[0m                             [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m# DL SEMINARS[0m                                                                                                [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m![](https://deeplearning.jp/wp-content/plugins/jetpack/modules/lazy-images/images/1x1.trans.gif)[0m             [32m│[0m
+[32m│[0m  [92m![](https://i0.wp.com/deeplearning.jp/wp-content/uploads/2018/08/img01.jpg?resize=640%2C419&ssl=1)[0m           [32m│[0m
+[32m│[0m  [92m![](https://deeplearning.jp/wp-content/plugins/jetpack/modules/lazy-images/images/1x1.trans.gif)[0m             [32m│[0m
+[32m│[0m  [92m![](https://i2.wp.com/deeplearning.jp/wp-content/uploads/2018/08/img02.jpg?resize=640%2C419&ssl=1)[0m           [32m│[0m
+[32m│[0m  [92m![](https://deeplearning.jp/wp-content/plugins/jetpack/modules/lazy-images/images/1x1.trans.gif)[0m             [32m│[0m
+[32m│[0m  [92m![](https://i0.wp.com/deeplearning.jp/wp-content/uploads/2018/08/img03.jpg?resize=640%2C419&ssl=1)[0m           [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92mDeep Learning技術は、他の分野では例を見ないスピードで世界的に研究が進められています。[0m                        [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92mこのような状況の下、DL Seminarsは、最先端の研究動向の調査を目的とし、論文の輪読会を毎週開催しております。[0m    [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m#### [Diffusion Papers 2024](#1718708820262-e5b77f66-cb49)[0m                                                   [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m## 2024 拡散モデル勉強会[0m                                                                                     [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m#### [DL Papers 2025](#1705024851913-e034b401-242f)[0m                                                          [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m## 2025年　輪読会[0m                                                                                            [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m#### [DL Papers 2024](#1737007581323-05a4b059-dd3d)[0m                                                          [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m## 2024年　輪読会[0m                                                                                            [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m#### [DL Papers 2023](#1682491439256-47b224be-5de6)[0m                                                          [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m## 2023年　輪読会[0m                                                                                            [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m#### [DL Pa...[0m                                                                                               [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+🔍 開始搜尋: AI large language models LLM, vision-language models VLM, multimodal models, single models comparison advantages use cases limitations
+📄 搜尋結果類型: <class 'dict'>
+✅ 結果格式正確，開始格式化...
+[1;36m🚀 Crew: [0m[1;36mcrew[0m
+├── [1;33m📋 Task: 495b773a-eaa0-4ece-a820-f3891e7fd579[0m
+│   [37mStatus: [0m[2;33mExecuting Task...[0m
+│   ├── [1;33m🔧 [0m[33mUsing Delegate work to coworker (1)[0m
+│   ├── [1;32m✅ [0m[32mMemory Retrieval Completed[0m
+│   │   └── Sources Used
+│   │       ├── ✅ Long Term Memory (0.20ms)
+│   │       ├── ✅ Short Term Memory (889.85ms)
+│   │       └── ✅ Entity Memory (593.46ms)
+│   ├── [1;32m🔧 [0m[32mUsed TavilySearchTool (1)[0m
+│   ├── [1;32m🔧 [0m[32mUsed TavilySearchTool (2)[0m
+│   └── [1;32m🔧 [0m[32mUsed TavilySearchTool (3)[0m
+└── [1;32m✅ [0m[32mMemory Retrieval Completed[0m
+    └── Sources Used
+        ├── ✅ Long Term Memory (0.18ms)
+        ├── ✅ Short Term Memory (630.68ms)
+        └── ✅ Entity Memory (984.92ms)[35m╭─[0m[35m──────────────────────────────────────────[0m[35m 🔧 Agent Tool Execution [0m[35m──────────────────────────────────────────[0m[35m─╮[0m
+[35m│[0m                                                                                                               [35m│[0m
+[35m│[0m  [37mAgent: [0m[1;92mTech Research Analyst[0m                                                                                 [35m│[0m
+[35m│[0m                                                                                                               [35m│[0m
+[35m│[0m  [37mThought: [0m[92mThought: I need to refine my search approach or add more specific queries to gather the desired [0m    [35m│[0m
+[35m│[0m  [92mcomprehensive insights on AI large language models, vision–language models, and others.[0m                      [35m│[0m
+[35m│[0m                                                                                                               [35m│[0m
+[35m│[0m  [37mUsing Tool: [0m[1;92mTavilySearchTool[0m                                                                                 [35m│[0m
+[35m│[0m                                                                                                               [35m│[0m
+[35m╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+[34m╭─[0m[34m────────────────────────────────────────────────[0m[34m Tool Input [0m[34m─────────────────────────────────────────────────[0m[34m─╮[0m
+[34m│[0m                                                                                                               [34m│[0m
+[34m│[0m  [38;2;230;219;116;49m"{\"query\": \"AI large language models LLM, vision-language models VLM, multimodal models, single models c[0m  [34m│[0m
+[34m│[0m                                                                                                               [34m│[0m
+[34m╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+[32m╭─[0m[32m────────────────────────────────────────────────[0m[32m Tool Output [0m[32m────────────────────────────────────────────────[0m[32m─╮[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m=== 搜尋結果 ===[0m                                                                                             [32m│[0m
+[32m│[0m  [92m-- 來源 1 --[0m                                                                                                 [32m│[0m
+[32m│[0m  [92m標題：Beyond LLMs: How Multimodal AI Will Change Product Thinking[0m                                            [32m│[0m
+[32m│[0m  [92m網址：https://8allocate.com/blog/beyond-llms-how-multimodal-ai-will-change-product-thinking/[0m                 [32m│[0m
+[32m│[0m  [92m內容摘要：[0m                                                                                                   [32m│[0m
+[32m│[0m  [92mLarge Language Models (LLMs) are AI models focused primarily on text – they excel at understanding and [0m      [32m│[0m
+[32m│[0m  [92mgenerating human language. Multimodal AI models, on the other hand, handle multiple types of data. While an[0m  [32m│[0m
+[32m│[0m  [92mLLM might answer a question based on text input, a multimodal model could answer a question by examining an[0m  [32m│[0m
+[32m│[0m  [92mimage and text together. In essence, LLMs are a subset of AI that deal with language, whereas multimodal AI[0m  [32m│[0m
+[32m│[0m  [92mextends to vision, speech, and more. For example, GPT-4 is both an LLM [...] It can be, but not always as [0m   [32m│[0m
+[32m│[0m  [92mmuch as one might think. The development effort is higher because you are effectively working with multiple[0m  [32m│[0m
+[32m│[0m  [92mAI components (you might need an image model, a text model, and a way to combine them). This often means [0m    [32m│[0m
+[32m│[0m  [92mmore engineering and experimentation time. Using pre-built APIs and models can cut costs significantly, [0m     [32m│[0m
+[32m│[0m  [92mwhereas building a large multimodal model from scratch would be very expensive and time-consuming [0m           [32m│[0m
+[32m│[0m  [92m(generally only AI labs do that). In terms of running [...] #### Is multimodal AI more expensive to build [0m   [32m│[0m
+[32m│[0m  [92mand run compared to single-modality AI?[0m                                                                      [32m│[0m
+[32m│[0m  [92m詳細全文：[0m                                                                                                   [32m│[0m
+[32m│[0m  [92mPublished Time: 2025-07-21 12:12:33[0m                                                                          [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92mBeyond LLMs: How Multimodal AI Will Change Product Thinking | 8allocate[0m                                      [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m===============[0m                                                                                              [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92mWe value your privacy[0m                                                                                        [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92mWe use cookies to ensure that we give you the best experience on our website. If you continue to use this [0m   [32m│[0m
+[32m│[0m  [92msite we will assume that you are happy with it.[0m                                                              [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92mCustomize Reject All Accept All[0m                                                                              [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92mCustomize Consent Preferences![Image 2: Close](https://cdn-cookieyes.com/assets/images/close.svg)[0m            [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92mWe use cookies to help you navigate efficiently and perform certain functions. You will find detailed [0m       [32m│[0m
+[32m│[0m  [92minformation about all cookies under each consent category below.[0m                                             [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92mThe cookies that are categorized as "Necessary" are stored on your browser as they are essential for [0m        [32m│[0m
+[32m│[0m  [92menabling...[0m                                                                                                  [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+[31;1m🖇 AgentOps: Error in span gpt-4o-mini.llm: LLM context length exceeded. Original error: litellm.ContextWindowExceededError: litellm.BadRequestError: ContextWindowExceededError: OpenAIException - This model's maximum context length is 128000 tokens. However, your messages resulted in 153809 tokens. Please reduce the length of the messages.
+Consider using a smaller input or implementing a text splitting strategy.[0m
+[93m Context length exceeded. Summarizing content to fit the model context window. Might take a while...[00m
+[93m Summarizing 1/4...[00m
+[31;1m🖇 AgentOps: Network error during span export: HTTPSConnectionPool(host='otlp.agentops.ai', port=443): Max retries exceeded with url: /v1/traces (Caused by SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:2436)')))[0m
+[93m Summarizing 2/4...[00m
+[93m Summarizing 3/4...[00m
+[93m Summarizing 4/4...[00m
+[1;36m🚀 Crew: [0m[1;36mcrew[0m
+├── [1;33m📋 Task: 495b773a-eaa0-4ece-a820-f3891e7fd579[0m
+│   [37mStatus: [0m[2;33mExecuting Task...[0m
+│   ├── [1;33m🔧 [0m[33mUsing Delegate work to coworker (1)[0m
+│   ├── [1;32m✅ [0m[32mMemory Retrieval Completed[0m
+│   │   └── Sources Used
+│   │       ├── ✅ Long Term Memory (0.20ms)
+│   │       ├── ✅ Short Term Memory (889.85ms)
+│   │       └── ✅ Entity Memory (593.46ms)
+│   ├── [1;32m🔧 [0m[32mUsed TavilySearchTool (1)[0m
+│   ├── [1;32m🔧 [0m[32mUsed TavilySearchTool (2)[0m
+│   └── [1;32m🔧 [0m[32mUsed TavilySearchTool (3)[0m
+└── [1;32m✅ [0m[32mMemory Retrieval Completed[0m
+    └── Sources Used
+        ├── ✅ Long Term Memory (0.18ms)
+        ├── ✅ Short Term Memory (630.68ms)
+        └── ✅ Entity Memory (984.92ms)[32m╭─[0m[32m───────────────────────────────────────────[0m[32m ✅ Agent Final Answer [0m[32m───────────────────────────────────────────[0m[32m─╮[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [37mAgent: [0m[1;92mTech Research Analyst[0m                                                                                 [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [37mFinal Answer:[0m                                                                                                [32m│[0m
+[32m│[0m  [92mHere’s a summary of key points about various AI models and technologies, including SoundHound, Flamingo, [0m    [32m│[0m
+[32m│[0m  [92mMUM, Florence, and notable limitations of vision-language models:[0m                                            [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m### Key AI Models and Technologies[0m                                                                           [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m1. **SoundHound**: [0m                                                                                          [32m│[0m
+[32m│[0m  [92m   - Specializes in voice recognition and conversational interfaces.[0m                                         [32m│[0m
+[32m│[0m  [92m   - Utilizes deep learning to empower speech-to-text and recognizing music.[0m                                 [32m│[0m
+[32m│[0m  [92m   - Aims to provide an interactive user experience for various applications, from smart devices to [0m         [32m│[0m
+[32m│[0m  [92menterprise solutions.[0m                                                                                        [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m2. **Flamingo**:[0m                                                                                             [32m│[0m
+[32m│[0m  [92m   - Developed by DeepMind, it blends vision and language processing capabilities.[0m                           [32m│[0m
+[32m│[0m  [92m   - Designed to handle novel tasks by leveraging a few examples (few-shot learning).[0m                        [32m│[0m
+[32m│[0m  [92m   - Enhances the ability to understand context and objects in visual scenes more effectively than [0m          [32m│[0m
+[32m│[0m  [92mtraditional models.[0m                                                                                          [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m3. **MUM (Multitask Unified Model)**:[0m                                                                        [32m│[0m
+[32m│[0m  [92m   - Created by Google, MUM is designed to process information across different modalities (text, images, [0m   [32m│[0m
+[32m│[0m  [92mvideo).[0m                                                                                                      [32m│[0m
+[32m│[0m  [92m   - Aims to provide comprehensive answers to complex queries by integrating various types of data.[0m          [32m│[0m
+[32m│[0m  [92m   - Focuses on improving the relevance of search results, making it useful for a range of applications.[0m     [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m4. **Florence**:[0m                                                                                             [32m│[0m
+[32m│[0m  [92m   - Part of Microsoft's AI initiative, focusing on advanced computer vision tasks.[0m                          [32m│[0m
+[32m│[0m  [92m   - Integrates visual understanding and natural language processing to enhance search and image [0m            [32m│[0m
+[32m│[0m  [92mrecognition tasks.[0m                                                                                           [32m│[0m
+[32m│[0m  [92m   - Targets multimodal applications to improve user interactions with AI systems.[0m                           [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m5. **TekRevol**:[0m                                                                                             [32m│[0m
+[32m│[0m  [92m   - An innovation and design firm that focuses on integrating AI into business solutions.[0m                   [32m│[0m
+[32m│[0m  [92m   - Develops custom AI models for various industries, enhancing operational efficiency and user [0m            [32m│[0m
+[32m│[0m  [92mexperiences.[0m                                                                                                 [32m│[0m
+[32m│[0m  [92m   - Engages in the application of AI to solve real-world problems across sectors like healthcare, finance,[0m  [32m│[0m
+[32m│[0m  [92mand education.[0m                                                                                               [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m### Limitations of Vision-Language Models (VLMs)[0m                                                             [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92m- **Data Dependency**: VLMs heavily rely on the quality and diversity of their training data. Biases in [0m     [32m│[0m
+[32m│[0m  [92mdata can lead to biased model outputs.[0m                                                                       [32m│[0m
+[32m│[0m  [92m- **Context Understanding**: They can struggle with complex contextual depictions, misinterpreting visual [0m   [32m│[0m
+[32m│[0m  [92mcues, or failing to associate them correctly with language.[0m                                                  [32m│[0m
+[32m│[0m  [92m- **Generalization Issues**: VLMs may not generalize well to unseen scenarios or tasks not represented in [0m   [32m│[0m
+[32m│[0m  [92mtheir training data.[0m                                                                                         [32m│[0m
+[32m│[0m  [92m- **Resource Intensive**: Training these models can be computationally expensive and time-consuming, posing[0m  [32m│[0m
+[32m│[0m  [92mchallenges for smaller organizations or teams.[0m                                                               [32m│[0m
+[32m│[0m  [92m- **Interpretability**: Understanding how VLMs arrive at specific decisions or outputs remains a challenge,[0m  [32m│[0m
+[32m│[0m  [92mcomplicating transparency and trust.[0m                                                                         [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m│[0m  [92mThis summary offers an overview of several prominent AI models and highlights some limitations associated [0m   [32m│[0m
+[32m│[0m  [92mwith vision-language models, reflecting the ongoing advancements and challenges in the field of AI.[0m          [32m│[0m
+[32m│[0m                                                                                                               [32m│[0m
+[32m╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+[31;1m🖇 AgentOps: [agentops.InternalSpanProcessor] Error uploading logfile: Upload failed: 401[0m
+🖇 AgentOps: [34m[34mSession Replay for default.session trace: https://app.agentops.ai/sessions?trace_id=3c19edf22a2ba18de76c2b003e544f15[0m[0m

@@ -1,0 +1,9 @@
+CrewAI Key Features:
+
+- Role-Based Agent Design: Customize agents with specific roles, goals, and backstories.
+- Flexible Task Management: Define tasks with clear instructions and expected outputs.
+- Crew Composition: Assemble crews of agents to tackle complex challenges.
+- Process Control: Choose between sequential and hierarchical processes for task execution.
+- Tool Integration: Equip agents with a wide range of tools, including custom-built ones.
+- Knowledge Base (RAG): Enable agents to query a knowledge base for information.
+- Self-Reflection: Implement self-critique and refinement loops for quality improvement.

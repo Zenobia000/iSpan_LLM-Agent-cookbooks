@@ -1,0 +1,5 @@
+This is a sample text file for the FileReaderTool test.
+
+It contains some basic information that the Agent needs to read and summarize.
+
+CrewAI is a powerful framework for building multi-agent systems.

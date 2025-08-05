@@ -1,0 +1,134 @@
+[tool.poetry]
+name = "crewai-agentic-course"
+version = "2.0.0"
+description = "CrewAI × Agentic Design Patterns 完整教案"
+authors = ["iSpan Team <team@ispan.com.tw>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/ispan/crewai-agentic-course"
+repository = "https://github.com/ispan/crewai-agentic-course"
+documentation = "https://docs.ispan.com.tw/crewai-agentic-course"
+keywords = ["crewai", "ai-agents", "agentic-patterns", "education"]
+package-mode = false
+
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+
+# Core AI Frameworksclear
+crewai = "*"
+crewai-tools = "*"
+
+# LLM Providers
+openai = "*"
+anthropic = "*"
+google-generativeai = "*"
+
+# Vector Database & Memory
+chromadb = "*"
+pysqlite3-binary = "*"
+
+# LangChain Ecosystem
+langchain = "*"
+langchain-community = "*"
+
+# Data Processing
+pandas = "*"
+numpy = "*"
+
+# Web Framework
+fastapi = "*"
+uvicorn = "*"
+
+# Validation & Serialization
+pydantic = "*"
+
+# HTTP & API
+requests = "*"
+aiohttp = "*"
+
+# Document Processing
+pypdf = "*"
+python-docx = "*"
+openpyxl = "*"
+
+# Configuration
+python-dotenv = "*"
+
+# Monitoring
+agentops = "*"
+llama-index = "^0.13.0"
+llama-index-embeddings-cohere = "^0.6.0"
+llama-index-readers-web = "^0.5.0"
+beautifulsoup4 = "^4.13.4"
+trafilatura = "^2.0.0"
+tavily-python = "^0.7.10"
+
+[tool.poetry.group.dev.dependencies]
+# Testing
+pytest = "*"
+pytest-asyncio = "*"
+
+# Code Quality
+black = "*"
+flake8 = "*"
+mypy = "*"
+pre-commit = "*"
+
+[tool.poetry.group.docs.dependencies]
+# Documentation
+mkdocs = "*"
+mkdocs-material = "*"
+
+# Jupyter & Visualization
+jupyter = "*"
+jupyterlab = "*"
+matplotlib = "*"
+seaborn = "*"
+
+[tool.poetry.group.monitoring.dependencies]
+# Monitoring & Observability
+prometheus-client = "*"
+grafana-api = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = "E203, W503"
+exclude = ".git,__pycache__,docs/source/conf.py,old,build,dist,.venv"
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers"
+testpaths = ["tests"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+] 
