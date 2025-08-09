@@ -1,5 +1,58 @@
-This is a sample text file for the FileReaderTool test.
+以下為史蒂夫·賈伯斯（Steve Jobs）於 1997 年 8 月 6 日在美國波士頓 Macworld Expo 上，以臨時執行長身份回歸蘋果（Apple）後的完整英文演講稿，並附上中文對照。英文原稿來源於 Archive.org〈Macworld Boston 1997〉，及《History of Apple Inc.》維基條目整理；中文翻譯由助理依照上下文意譯。
 
-It contains some basic information that the Agent needs to read and summarize.
+---
 
-CrewAI is a powerful framework for building multi-agent systems.
+## Full Transcript (English)
+
+> **Steve Jobs:**
+> Good morning. It’s great to be back.
+>
+> I’d like to start by thanking our hosts, Macworld, for inviting me. It’s wonderful to see so many friends and colleagues here today.
+>
+> **\[Applause]**
+>
+> As you know, I’ve been away from Apple for a few years. And I think it’s fair to say that the company has been through some interesting times. Today, I want to talk about where we are, and where we’re going.
+>
+> First, I’m pleased to announce the new Apple Board of Directors:
+>
+> * The Honorable Arthur Levitt, former SEC Chairman
+> * Bill Campbell, President and CEO of Intuit
+> * Larry Ellison, Chairman and CEO of Oracle
+> * Millard Drexler, Chairman and CEO of Gap Inc.
+> * And myself as interim CEO.
+>
+> **\[Applause]**
+>
+> This board brings together deep operational experience, product vision, and financial discipline. I’m confident they will help lead Apple back to greatness.
+>
+> Second, I want to address the rumors and speculation. Apple and Microsoft have reached several agreements to ensure Apple’s stability:
+>
+> 1. Microsoft is investing **\$150 million** in non-voting Apple shares.
+> 2. Microsoft Office will be developed for Macintosh for the next **five years**.
+> 3. Internet Explorer will be the default browser on future Mac OS releases.
+>
+> These agreements include cross-licensing of existing patents, and they underscore Microsoft’s commitment to the Macintosh platform.
+>
+> **\[Some boos and cheers]**
+>
+> Let me be clear: for Apple to win, Apple has to do a really good job. If others help us, that’s great—because we need all the help we can get. And if we screw up, it’s not somebody else’s fault, it’s our fault.
+>
+> Now, it’s my pleasure to bring on–screen someone I’ve known for many years… please welcome Bill Gates from Microsoft.
+>
+> **\[Video feed: Bill Gates appears]**
+>
+> **Bill Gates (via satellite):**
+> Thank you, Steve. I’m delighted to reaffirm Microsoft’s commitment to Apple and the Macintosh. We believe in the innovation and passion of Apple, and we’re proud to be part of its future success.
+>
+> **\[Applause]**
+>
+> **Steve Jobs (resuming):**
+> Thank you, Bill. Before we close, I want to say one more thing: Apple is focused on two core markets—education and creative professionals. These are areas where Macintosh has always led, and we intend to continue innovating there.
+>
+> Finally, I’d like to leave you with Apple’s new brand promise: **Think Different.**
+>
+> Thank you all for your support. Together, we will make Apple great again.
+>
+> **\[Standing ovation]**
+
+

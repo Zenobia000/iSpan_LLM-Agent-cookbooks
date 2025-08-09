@@ -331,7 +331,7 @@ def run_advanced_refine_demo():
     print("   - 結構化的迭代記錄和分析")
 
     # 1. 初始化工作流程
-    workflow = AdvancedReflectionWorkflow(max_iterations=3, difficulty=DifficultyLevel.STANDARD)
+    workflow = AdvancedReflectionWorkflow(max_iterations=3, difficulty=DifficultyLevel.EXPERT)
     
     # 2. 創建 Agents
     writer = create_content_writer()

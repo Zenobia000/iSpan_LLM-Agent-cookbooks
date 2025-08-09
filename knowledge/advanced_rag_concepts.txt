@@ -1,0 +1,9 @@
+- CrewAI excels at orchestrating role-playing, autonomous AI agents.
+- It simplifies the process of creating complex multi-agent interactions.
+- A key feature is the ability to define agents with specific roles, goals, and tools.
+- For advanced RAG, a common technique is Query Expansion, where a single user query is transformed into multiple, more specific sub-queries.
+- Another advanced technique is Multi-path Retrieval, where the system fetches and merges documents from all sub-queries to create a comprehensive context.
+- Ragas is a popular framework for evaluating RAG pipelines, focusing on metrics like faithfulness, context relevancy, and answer relevancy.
+- Faithfulness measures how much the generated answer is grounded in the provided context.
+- Context Relevancy measures how relevant the retrieved context is to the original query.
+- Answer Relevancy measures how well the generated answer addresses the user's question.

@@ -1,17 +1,65 @@
-# Week 09: Knowledge & RAG
+# Week 09: 知識庫與 RAG (Knowledge & RAG)
+
+本實驗室深入探討了如何在 `crewai` 中整合知識庫，以實現檢索增強生成 (RAG)，讓 Agent 能夠基於外部文件回答問題。我們經歷了從除錯、API 演進適應到參數微調的全過程，最終總結出三種核心的實現模式。
 
 ## 學習目標
 
-- 了解 CrewAI 中 `KnowledgeBase` 的概念與用途。
-- 學習如何從本地檔案建立一個知識庫。
-- 實作一個使用 RAG (Retrieval-Augmented Generation) 技術的 Agent，使其能夠根據知識庫的內容來回答問題。
+- 理解 RAG 在 Agentic AI 中的重要性。
+- 掌握在 `crewai` 中為 Agent 或 Crew 賦予知識的方法。
+- 學習如何除錯因框架版本迭代而產生的 API 不相容問題。
+- 探索並實作三種不同的 RAG 模式：`FileReadTool`、`Crew-Level Knowledge`、以及進階的參數微調。
+- 理解 RAG 背後的文本切割、檢索與排序策略。
 
-## 實作步驟
+---
 
-1.  **準備知識庫來源檔案:** 建立一個或多個文字檔案，作為 RAG 的知識來源。例如，`crewai_features.txt`。
-2.  **建立 `solution.py`:**
-    *   導入 `Agent`, `Task`, `Crew`, `KnowledgeBase`。
-    *   使用 `KnowledgeBase(source_files=['./crewai_features.txt'])` 來建立一個知識庫實例。
-    *   建立一個 `RAGAgent`，並將 `knowledge_base` 作為參數傳入。
-    *   建立一個 `Task`，其 `description` 提出一個只有在知識庫檔案中才能找到答案的問題。
-    *   建立並執行 Crew，觀察 Agent 是否成功地從知識庫中檢索資訊來回答問題。
+## 實驗探索的三種 RAG 模式
+
+我們在本次實驗中，循序漸進地實現了以下三種 RAG 方法，每種方法都有其適用場景和優缺點。
+
+### 模式一：`FileReadTool` - 穩定可靠的直接方案
+
+- **檔案**: `solution.py`
+- **核心思想**: 將 RAG 視為一個普通的「工具」。我們建立一個 `FileReadTool`，並明確地在 Task Prompt 中指示 Agent 使用這個工具來讀取特定檔案。
+- **優點**:
+    - **穩定性極高**: 不易受到 `crewai` 內部 RAG 機制 API 變動的影響。
+    - **行為明確**: Agent 的每一步操作（讀取檔案）都在日誌中清晰可見，易於除錯。
+    - **控制精細**: 可以精確控制 Agent 何時、如何讀取哪個檔案。
+- **缺點**:
+    - **不夠「原生」**: 未能完全利用 `crewai` 內建的智慧檢索機制。
+    - **可能不夠智慧**: Agent 只是將整個檔案內容讀取到上下文中，而不是進行語義相關的區塊檢索。
+
+### 模式二：`Crew-Level Knowledge` - 官方推薦的標準實踐
+
+- **檔案**: `solution_crew_knowledge.py`
+- **核心思想**: 遵循 `crewai` 最新的官方指導。將知識檔案放入根目錄的 `knowledge` 資料夾中，建立一個 `TextFileKnowledgeSource`，並將其賦予 `Crew` 的 `knowledge_sources` 參數。
+- **優點**:
+    - **符合框架設計**: 這是 `crewai` 官方推薦的最佳實踐，能最好地利用其底層優化。
+    - **智慧檢索**: `crewai` 會自動處理文本切割、向量化、相似度搜尋和查詢重寫，比手動讀取整個檔案更有效率和智慧。
+    - **架構解耦**: Agent 的定義與知識來源分離，使得知識庫的管理更加靈活。
+- **缺點**:
+    - **API 不穩定**: 正如我們所經歷的，`crewai` 的 RAG 相關 API（如 `Knowledge` vs `KnowledgeBase`）變動頻繁，舊的教學可能不再適用。
+
+### 模式三：進階參數微調 - 精確控制 RAG 行為
+
+- **檔案**: `solution_tuned_knowledge.py`
+- **核心思想**: 在「模式二」的基礎上，進一步客製化 RAG 流程的各個環節。
+- **可微調參數**:
+    - **文本切割 (Chunking)**:
+        - `chunk_size`: 控制每個文本區塊的大小。
+        - `chunk_overlap`: 控制區塊間的重疊，以保持上下文。
+    - **檢索 (Retrieval)**:
+        - `results_limit`: 限制返回給 Agent 的最相關文本區塊數量。
+        - `score_threshold`: 設定相似度分數門檻，過濾掉不相關的結果。
+    - **嵌入 (Embedding)**:
+        - `embedder`: 允許替換預設的 OpenAI 嵌入模型，可改用 `Ollama`、`HuggingFace` 等本地或第三方模型。
+- **優點**:
+    - **高度客製化**: 能夠根據具體任務和文件特性，精確調優 RAG 流程，以達到最佳效果。
+    - **效能與成本控制**: 透過選擇合適的嵌入模型和檢索參數，可以在效果、速度和成本之間取得平衡。
+
+---
+
+## 關鍵學習與工程洞見
+
+- **API 穩定性的重要性**: 這次實驗最深刻的教訓是，在選用快速發展的 AI 框架時，必須意識到其 API 可能會頻繁變動。當遇到問題時，**回退到一個已知穩定的方案 (`FileReadTool`) 往往比在不確定的新 API 上持續猜測更有效**。
+- **遵循框架的設計哲學**: `crewai` 對 `knowledge` 資料夾的位置和相對路徑有其預設的慣例。遵循這些慣例，而不是用絕對路徑去「覆寫」它，可以避免許多意想不到的錯誤。
+- **RAG 不僅僅是讀檔案**: `crewai` 內建的 RAG 機制包含了智慧的「查詢重寫」，這使其比簡單的檔案讀取更強大，能更好地理解 Agent 的真實意圖。
