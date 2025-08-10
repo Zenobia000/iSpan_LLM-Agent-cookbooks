@@ -21,27 +21,46 @@ load_dotenv()
 
 from langchain_openai import ChatOpenAI
 from crewai import Agent, Task, Crew, Process
-from work.labs.week07_tools_custom.file_reader_tool import FileReaderTool
+# 修正導入路徑，同時導入 Class-based 和 Function-based 工具
+from work.labs.week07_tools_custom.file_reader_tool import FileReaderTool, read_file_content
 
 
-# 1. Instantiate the custom tool
-file_reader_tool = FileReaderTool()
+# 1. 實例化 Class-based 工具
+class_based_tool = FileReaderTool()
 
-# 2. Create an Agent that uses the tool
-file_reading_agent = Agent(
-    role="File Reading Specialist",
-    goal="Read the content of a specified file and provide a summary in bullet points with TOFEL format.",
-    backstory="You are an expert at quickly reading and extracting key information from text files.",
-    tools=[file_reader_tool],
+# 2. Function-based 工具可以直接使用
+function_based_tool = read_file_content
+
+# --- Crew 1: 使用 Class-based Tool ---
+
+# 3. 建立使用 Class-based 工具的 Agent
+agent_class_based = Agent(
+    role="File Reading Specialist (Class-based)",
+    goal="Read the content of a specified file and provide a summary in bullet points.",
+    backstory="You are an expert at quickly reading and extracting key information from text files using class-based tools.",
+    tools=[class_based_tool],
     llm=ChatOpenAI(model_name="gpt-4o"),
     verbose=True
 )
 
-# 3. Create a Task for the Agent
-# Note: We construct the absolute path to the file dynamically to ensure portability.
+# --- Crew 2: 使用 Function-based Tool ---
+
+# 4. 建立使用 Function-based 工具的 Agent
+agent_function_based = Agent(
+    role="File Reading Specialist (Function-based)",
+    goal="Read the content of a specified file and provide a summary in bullet points.",
+    backstory="You are an expert at quickly reading and extracting key information from text files using function-based tools.",
+    tools=[function_based_tool],
+    llm=ChatOpenAI(model_name="gpt-4o"),
+    verbose=True
+)
+
+
+# 5. 為兩個 Agent 建立共同的 Task
+# 動態構建檔案的絕對路徑以確保可移植性
 file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'sample_data.txt'))
 
-read_file_task = Task(
+task_template = Task(
     description=f"""Please assume the role of a senior professional writer and read the document located at “{file_path}.” Then, produce a structured, clear, and concise summary report following the five-section framework below:
 
 1. **Introduction**  
@@ -64,19 +83,43 @@ read_file_task = Task(
    – Recap the main findings  
    – Offer actionable suggestions or directions for further consideration
 """,
-    expected_output="A concise summary of the file's content in bullet points with TOFEL format.",
-    agent=file_reading_agent
+    expected_output="A concise summary of the file's content, formatted as a professional report with five distinct sections."
 )
 
-# 4. Create and run the Crew
-crew = Crew(
-    agents=[file_reading_agent],
-    tasks=[read_file_task],
+# 6. 為每個 Agent 指派 Task
+task_class_based = task_template
+task_class_based.agent = agent_class_based
+
+task_function_based = task_template
+task_function_based.agent = agent_function_based
+
+
+# 7. 建立並執行兩個 Crew
+crew_class_based = Crew(
+    agents=[agent_class_based],
+    tasks=[task_class_based],
     process=Process.sequential,
     verbose=True
 )
 
+crew_function_based = Crew(
+    agents=[agent_function_based],
+    tasks=[task_function_based],
+    process=Process.sequential,
+    verbose=True
+)
+
+
 if __name__ == "__main__":
-    result = crew.kickoff()
-    print("\n--- Final Result ---")
-    print(result)
+    print("--- 🚀 Starting Crew with Class-based Tool ---")
+    result_class_based = crew_class_based.kickoff()
+    print("\n\n--- ✅ Final Result (Class-based) ---")
+    print(result_class_based)
+
+    print("\n" + "="*50 + "\n")
+
+    print("--- 🚀 Starting Crew with Function-based Tool ---")
+    result_function_based = crew_function_based.kickoff()
+    print("\n\n--- ✅ Final Result (Function-based) ---")
+    print(result_function_based)
+

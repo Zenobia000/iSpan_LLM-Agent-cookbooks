@@ -1,7 +1,7 @@
 # CrewAI 專案開發任務清單 (WBS)
 
 > **最後更新**: 2025年8月8日
-> **狀態**: Phase 1-3 核心功能完成，Phase 4 進行中。
+> **狀態**: Phase 1-5 核心功能完成，Phase 6 待開發。
 
 本文件使用工作分解結構 (Work Breakdown Structure) 來規劃 `crewai-agentic-course` 專案的開發時程。開發將優先專注於 `src/` 核心功能的 MVP，並同步推進 `work/` 各週的實作驗證。
 
@@ -15,7 +15,7 @@
 | **Phase 2** | 流程控制與 Planning Pattern (W3-4) | ✅ 完成 | 100% |
 | **Phase 3** | 事件驅動與外部整合 (W5-8) | ✅ 完成 | 100% |
 | **Phase 4** | RAG 與知識庫整合 (W9-10) | ✅ 完成 | 100% |
-| **Phase 5** | 模型訓練與測試 (W11-12) | ⏳ 待開發 | 0% |
+| **Phase 5** | 模型訓練與測試 (W11-12) | ✅ 完成 | 100% |
 | **Phase 6** | 監控與部署 (W13-14) | ⏳ 待開發 | 0% |
 | **Phase 7** | 綜合專案與架構重構 (W15-16) | ⏳ 待開發 | 5% |
 
@@ -25,11 +25,11 @@
 - ✅ **核心工具鏈重構**: 將 `search` 和 `scrape` 功能整合到單一、高效的 `TavilySearchTool` 中。
 - ✅ **進階 RAG 模式探索 (Week 09-10)**: 成功實作了包含「自我反思」、「查詢擴展」與「HyDE」三種 SOTA RAG 策略，並整合 `ragas` 進行量化評估。
 - ✅ **目錄結構完整**: 已建立全部 16 週的 `work/labs` 目錄結構。
+- ✅ **完成 Phase 5 (訓練與測試)**: 完成了包含數據生成、單元測試和效能基準測試的完整循環。
 
 ### 🚀 **當前工作重點 (Next Steps)**
-- 🚀 **啟動 Phase 5 (訓練與測試)**: 開始 `week11_training_pipeline` 的規劃與開發。
+- 🚀 **啟動 Phase 6 (監控與部署)**: 規劃 `week13_observability` 的整合方案。
 - 🚀 **完善 Week 15 (多代理協作)**: 實作一個涵蓋多種 Agentic Pattern 的綜合協作範例。
-- ⏳ **啟動 Phase 6 (監控與部署)**: 規劃 `week13_observability` 的整合方案。
 
 ---
 
@@ -111,15 +111,15 @@
 
 ---
 
-## ⏳ Phase 5: 模型訓練與測試 (對應 Syllabus Week 11-12) - **待開發**
+## ✅ Phase 5: 模型訓練與測試 (對應 Syllabus Week 11-12) - **已完成**
 
-### 5.1. Epic: CrewAI 訓練管道 (對應 `work/labs/week11_training_pipeline`) - **⏳ 待開發**
-- [ ] **Task 5.1.1:** 實作訓練數據收集與格式化流程。
-- [ ] **Task 5.1.2:** 建立 CrewAI 訓練執行與驗證機制。
+### 5.1. Epic: CrewAI 訓練管道 (對應 `work/labs/week11_training_pipeline`) - **✅ 完成**
+- [x] **Task 5.1.1:** 實作訓練數據收集與格式化流程。
+- [x] **Task 5.1.2:** 建立 CrewAI 訓練執行與驗證機制。
 
-### 5.2. Epic: 測試與品質保證 (對應 `work/labs/week12_testing_qa`) - **⏳ 待開發**
-- [ ] **Task 5.2.1:** 實作 Agent 與 Crew 的單元測試框架。
-- [ ] **Task 5.2.2:** 建立效能基準測試與 A/B Testing 機制。
+### 5.2. Epic: 測試與品質保證 (對應 `work/labs/week12_testing_qa`) - **✅ 完成**
+- [x] **Task 5.2.1:** 實作 Agent 與 Crew 的單元測試框架。
+- [x] **Task 5.2.2:** 建立效能基準測試與 A/B Testing 機制。
 
 ---
 
