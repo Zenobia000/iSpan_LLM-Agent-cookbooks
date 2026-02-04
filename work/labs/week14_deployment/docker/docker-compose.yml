@@ -1,0 +1,143 @@
+version: '3.8'
+
+services:
+  # CrewAI Application
+  crewai-app:
+    build:
+      context: ../../..  # Build from project root
+      dockerfile: work/labs/week14_deployment/docker/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - OPIK_API_KEY=${OPIK_API_KEY}
+      - OPIK_WORKSPACE=${OPIK_WORKSPACE:-crewai-deployment}
+      - OPIK_PROJECT_NAME=${OPIK_PROJECT_NAME:-week14-deployment}
+      - REDIS_URL=redis://redis:6379/0
+      - POSTGRES_URL=postgresql://crewai:password@postgres:5432/crewai_db
+    volumes:
+      - ../../../work:/app/work  # Mount work directory for development
+      - ../../../src:/app/src    # Mount source code for development
+    depends_on:
+      - postgres
+      - redis
+      - opik
+    networks:
+      - crewai-network
+    restart: unless-stopped
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=crewai_db
+      - POSTGRES_USER=crewai
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - crewai-network
+    restart: unless-stopped
+
+  # Redis for caching and task queuing
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - crewai-network
+    restart: unless-stopped
+
+  # Opik for observability (local deployment)
+  opik:
+    image: ghcr.io/comet-ml/opik:latest
+    ports:
+      - "5173:5173"  # UI
+      - "3003:3003"  # API
+    environment:
+      - OPIK_DATABASE_URL=postgresql://opik:opik_password@opik-db:5432/opik
+    depends_on:
+      - opik-db
+    networks:
+      - crewai-network
+    restart: unless-stopped
+
+  # Opik Database
+  opik-db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=opik
+      - POSTGRES_USER=opik
+      - POSTGRES_PASSWORD=opik_password
+    volumes:
+      - opik_data:/var/lib/postgresql/data
+    networks:
+      - crewai-network
+    restart: unless-stopped
+
+  # ChromaDB for vector storage
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8001:8000"
+    environment:
+      - CHROMA_SERVER_HOST=0.0.0.0
+    volumes:
+      - chroma_data:/chroma/chroma
+    networks:
+      - crewai-network
+    restart: unless-stopped
+
+  # Prometheus for metrics collection
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    networks:
+      - crewai-network
+    restart: unless-stopped
+
+  # Grafana for metrics visualization
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      - prometheus
+    networks:
+      - crewai-network
+    restart: unless-stopped
+
+networks:
+  crewai-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  opik_data:
+  chroma_data:
+  prometheus_data:
+  grafana_data:

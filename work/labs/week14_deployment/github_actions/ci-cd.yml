@@ -1,0 +1,259 @@
+name: CrewAI CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ published ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # Code Quality and Testing
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install UV
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+    - name: Install dependencies
+      run: |
+        uv sync --dev
+
+    - name: Run code quality checks
+      run: |
+        uv run black --check .
+        uv run flake8 .
+        uv run mypy src/
+
+    - name: Run security scan
+      run: |
+        uv run bandit -r src/ -f json -o bandit-report.json
+        uv run safety check
+
+    - name: Run tests
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY_TEST }}
+        TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY_TEST }}
+      run: |
+        uv run pytest tests/ -v --cov=src --cov-report=xml
+
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results-${{ matrix.python-version }}
+        path: |
+          bandit-report.json
+          coverage.xml
+
+  # Build Docker Image
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+      image-digest: ${{ steps.build.outputs.digest }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Container Registry
+      if: github.event_name != 'pull_request'
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable={{is_default_branch}}
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+
+    - name: Build and push Docker image
+      id: build
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: work/labs/week14_deployment/docker/Dockerfile
+        platforms: linux/amd64,linux/arm64
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        build-args: |
+          BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
+          BUILD_REVISION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
+          BUILD_VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+
+  # Security Scanning
+  security:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: ${{ needs.build.outputs.image-tag }}
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  # Deploy to Staging
+  deploy-staging:
+    needs: [build, security]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: https://staging.crewai.yourdomain.com
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure kubectl
+      uses: azure/k8s-set-context@v3
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.KUBE_CONFIG_STAGING }}
+
+    - name: Deploy to staging
+      run: |
+        # Update image tag in Kubernetes manifests
+        sed -i 's|image: crewai:latest|image: ${{ needs.build.outputs.image-tag }}|g' work/labs/week14_deployment/kubernetes/crewai-app.yaml
+
+        # Apply Kubernetes manifests
+        kubectl apply -f work/labs/week14_deployment/kubernetes/namespace.yaml
+        kubectl apply -f work/labs/week14_deployment/kubernetes/postgres.yaml
+        kubectl apply -f work/labs/week14_deployment/kubernetes/redis.yaml
+        kubectl apply -f work/labs/week14_deployment/kubernetes/crewai-app.yaml
+
+        # Wait for deployment to be ready
+        kubectl rollout status deployment/crewai-app -n crewai --timeout=300s
+
+    - name: Run smoke tests
+      run: |
+        # Wait for service to be available
+        kubectl wait --for=condition=available --timeout=300s deployment/crewai-app -n crewai
+
+        # Run basic health check
+        ENDPOINT=$(kubectl get service crewai-service -n crewai -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        curl -f http://${ENDPOINT}/health || exit 1
+
+  # Deploy to Production
+  deploy-production:
+    needs: [build, security]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    environment:
+      name: production
+      url: https://crewai.yourdomain.com
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure kubectl
+      uses: azure/k8s-set-context@v3
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.KUBE_CONFIG_PRODUCTION }}
+
+    - name: Deploy to production
+      run: |
+        # Update image tag in Kubernetes manifests
+        sed -i 's|image: crewai:latest|image: ${{ needs.build.outputs.image-tag }}|g' work/labs/week14_deployment/kubernetes/crewai-app.yaml
+
+        # Apply Kubernetes manifests
+        kubectl apply -f work/labs/week14_deployment/kubernetes/namespace.yaml
+        kubectl apply -f work/labs/week14_deployment/kubernetes/postgres.yaml
+        kubectl apply -f work/labs/week14_deployment/kubernetes/redis.yaml
+        kubectl apply -f work/labs/week14_deployment/kubernetes/crewai-app.yaml
+
+        # Wait for deployment to be ready
+        kubectl rollout status deployment/crewai-app -n crewai --timeout=600s
+
+    - name: Run production health checks
+      run: |
+        kubectl wait --for=condition=available --timeout=600s deployment/crewai-app -n crewai
+
+        ENDPOINT=$(kubectl get service crewai-service -n crewai -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        curl -f http://${ENDPOINT}/health || exit 1
+        curl -f http://${ENDPOINT}/metrics || exit 1
+
+    - name: Notify deployment success
+      uses: 8398a7/action-slack@v3
+      with:
+        status: success
+        channel: '#deployments'
+        text: '🚀 CrewAI successfully deployed to production!'
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+  # Cleanup
+  cleanup:
+    needs: [deploy-staging, deploy-production]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+    - name: Clean up old images
+      run: |
+        # Clean up old container images (keep last 10)
+        echo "Cleaning up old images..."
+        # This would typically involve calling your registry API
+        # to delete old image tags

@@ -1,0 +1,56 @@
+# Week 16 Capstone Project Dependencies
+# Add your project-specific dependencies here
+
+# Core CrewAI framework
+crewai>=0.80.0
+crewai-tools>=0.15.0
+
+# Language model providers
+openai>=1.0.0
+anthropic>=0.25.0
+
+# Vector databases and embeddings
+chromadb>=0.5.0
+sentence-transformers>=2.7.0
+
+# Data processing and utilities
+pandas>=2.0.0
+numpy>=1.24.0
+requests>=2.31.0
+python-dotenv>=1.0.0
+
+# Web and API frameworks (optional)
+fastapi>=0.110.0
+streamlit>=1.32.0
+gradio>=4.0.0
+
+# Database connectors (optional)
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0
+pymongo>=4.6.0
+
+# Monitoring and observability
+opik>=0.2.0
+wandb>=0.16.0
+
+# Testing framework
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+
+# Development tools
+black>=24.0.0
+flake8>=7.0.0
+mypy>=1.8.0
+
+# Deployment tools (optional)
+uvicorn>=0.27.0
+gunicorn>=21.2.0
+
+# Additional ML/AI libraries (optional)
+scikit-learn>=1.4.0
+matplotlib>=3.8.0
+seaborn>=0.13.0
+
+# File processing (optional)
+pypdf>=4.0.0
+python-docx>=1.1.0

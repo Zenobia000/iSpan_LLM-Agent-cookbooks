@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crewai
+  labels:
+    name: crewai
+    environment: production
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crewai-config
+  namespace: crewai
+data:
+  ENVIRONMENT: "production"
+  OPIK_WORKSPACE: "crewai-k8s"
+  OPIK_PROJECT_NAME: "week14-k8s-deployment"
+  REDIS_URL: "redis://redis-service:6379/0"
+  POSTGRES_URL: "postgresql://crewai:password@postgres-service:5432/crewai_db"
+  CHROMADB_URL: "http://chromadb-service:8000"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: crewai-secrets
+  namespace: crewai
+type: Opaque
+data:
+  # Base64 encoded secrets - replace with actual values
+  # echo -n "your-openai-api-key" | base64
+  OPENAI_API_KEY: eW91ci1vcGVuYWktYXBpLWtleQ==
+  # echo -n "your-tavily-api-key" | base64
+  TAVILY_API_KEY: eW91ci10YXZpbHktYXBpLWtleQ==
+  # echo -n "your-opik-api-key" | base64
+  OPIK_API_KEY: eW91ci1vcGlrLWFwaS1rZXk=
+  # echo -n "password" | base64
+  POSTGRES_PASSWORD: cGFzc3dvcmQ=

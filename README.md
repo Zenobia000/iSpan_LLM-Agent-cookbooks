@@ -45,21 +45,23 @@
 
 ### 安裝步驟
 
-#### 方法一：使用 Poetry (推薦)
+#### 方法一：使用 uv (推薦)
 
 ```bash
 # 1. 克隆專案
 git clone https://github.com/ispan/crewai-agentic-course.git
 cd crewai-agentic-course
 
-# 2. 安裝 Poetry
-curl -sSL https://install.python-poetry.org | python3 -
+# 2. 安裝 uv (如果尚未安裝)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+# 或使用 pip: pip install uv
 
-# 3. 安裝依賴
-poetry install
+# 3. 創建虛擬環境並安裝依賴
+uv sync
 
 # 4. 啟用虛擬環境
-poetry shell
+source .venv/bin/activate  # Linux/Mac
+# .venv\Scripts\activate.bat  # Windows
 
 # 5. 設定環境變數
 cp .env.example .env
@@ -79,7 +81,7 @@ source .venv/bin/activate  # Linux/Mac
 # .venv\Scripts\activate  # Windows
 
 # 3. 安裝依賴
-pip install -r requirements.txt
+pip install -e .
 
 # 4. 設定環境變數
 cp .env.example .env
@@ -316,7 +318,7 @@ pytest tests/performance/ -v --benchmark-only
 git checkout -b feature/your-feature-name
 
 # 2. 安裝開發依賴
-poetry install --with dev
+uv sync --extra dev
 
 # 3. 設定 pre-commit hooks
 pre-commit install

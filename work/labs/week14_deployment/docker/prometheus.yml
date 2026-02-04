@@ -1,0 +1,49 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # CrewAI Application
+  - job_name: 'crewai-app'
+    static_configs:
+      - targets: ['crewai-app:8000']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  # Redis metrics (if redis-exporter is used)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+    scrape_interval: 30s
+
+  # PostgreSQL metrics (if postgres-exporter is used)
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres:5432']
+    scrape_interval: 30s
+
+  # ChromaDB metrics
+  - job_name: 'chromadb'
+    static_configs:
+      - targets: ['chromadb:8000']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Example alerting rules (uncomment and modify as needed)
+# rule_files:
+#   - "alert_rules.yml"

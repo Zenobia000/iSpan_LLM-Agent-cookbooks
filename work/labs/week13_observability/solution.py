@@ -14,25 +14,33 @@ if sys.stderr.encoding != 'UTF-8':
     sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
 # ------------------------------------
 
-# --- AgentOps Initialization ---
-# Note: To use AgentOps, you need to install it (`pip install agentops`)
-# and set your AGENTOPS_API_KEY in the .env file.
-import agentops
+# --- Opik Initialization ---
+# Note: To use Opik, you need to install it (`pip install opik`)
+# and optionally set your OPIK_API_KEY and OPIK_WORKSPACE in the .env file.
+import opik
 
 # Add project root to sys.path for consistent imports
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-# Import all crewai components before initializing agentops
+# Import all crewai components before initializing opik
 from crewai import Agent, Task, Crew, Process
 from src.core.tools.search_tool import TavilySearchTool
 from work.labs.week13_observability.custom_handler import CustomToolsHandler
+from work.labs.week13_observability.opik_config import track_crew_workflow, track_agent_execution, log_agent_metrics
 
-# --- AgentOps Initialization ---
-# Load environment variables and initialize AgentOps AFTER crewai imports
+# --- Opik Initialization ---
+# Load environment variables and initialize Opik AFTER crewai imports
 load_dotenv()
-agentops.init()
+
+# Initialize Opik for observability and monitoring
+client = opik.Opik()
+# You can also configure Opik with specific settings:
+# client = opik.Opik(
+#     api_key=os.getenv("OPIK_API_KEY"),  # Optional if using local deployment
+#     workspace=os.getenv("OPIK_WORKSPACE", "default"),
+# )
 # -----------------------------
 
 # --- Agent Definitions ---
@@ -155,9 +163,30 @@ crew = Crew(
     verbose=True,
 )
 
-# --- Execution ---
-print("🚀 Kicking off the crew execution...")
-result = crew.kickoff()
+# --- Execution with Opik Tracking ---
+@track_crew_workflow("ai_blog_crew")
+def execute_crew():
+    """Execute the crew with Opik tracking"""
+    print("🚀 Kicking off the crew execution...")
+
+    # Log initial metrics
+    log_agent_metrics("crew_startup", {
+        "total_agents": len(crew.agents),
+        "total_tasks": len(crew.tasks),
+        "process_type": "sequential"
+    })
+
+    result = crew.kickoff()
+
+    # Log completion metrics
+    if custom_handler:
+        usage_stats = custom_handler.get_usage_stats()
+        log_agent_metrics("crew_completion", usage_stats)
+
+    return result
+
+# Execute the crew
+result = execute_crew()
 
 print("\n\n########################")
 print("## Crew Execution Result:")
